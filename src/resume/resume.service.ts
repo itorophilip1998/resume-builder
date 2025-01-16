@@ -4,31 +4,34 @@ import * as fs from 'fs';
 
 @Injectable()
 export class ResumeService {
-  private readonly HF_API_KEY = process.env.HUGGING_FACE_API_KEY; // Set Hugging Face API Key in environment variables
+  private readonly HF_API_KEY = process.env.HUGGING_FACE_API_KEY; // Set Hugging Face API Key
 
   async generateResumeWithAI(prompt: string): Promise<string> {
     try {
-      // Make a POST request to the Hugging Face API for GPT-2 inference
+      // Prepare the request body with the 'inputs' key for Hugging Face
+      const requestBody = {
+        inputs: prompt,
+      };
+
+      // Send the POST request to Hugging Face API for GPT-2 inference
       const response = await axios.post(
         'https://api-inference.huggingface.co/models/gpt2', // Hugging Face GPT-2 API endpoint
-        {
-          inputs: prompt, // The input prompt for the resume generation
-        },
+        requestBody, // Pass the request body
         {
           headers: {
-            Authorization: `Bearer ${this.HF_API_KEY}`, // Authorization header with the Hugging Face API Key
-            'Content-Type': 'application/json', // Ensure the content is JSON
+            Authorization: `Bearer ${this.HF_API_KEY}`, // Authorization header with API key
+            'Content-Type': 'application/json', // Ensure JSON content
           },
         },
       );
 
-      // Check the response data to ensure the generation is complete
+      // Check if we have valid response data
       if (
         response.data &&
         Array.isArray(response.data) &&
         response.data[0]?.generated_text
       ) {
-        return response.data[0].generated_text.trim(); // Extract the generated resume text
+        return response.data[0].generated_text.trim(); // Return the generated text
       } else {
         throw new Error('Invalid response structure from Hugging Face API');
       }
