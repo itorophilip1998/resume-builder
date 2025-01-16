@@ -4,7 +4,7 @@ import * as fs from 'fs';
 
 @Injectable()
 export class ResumeService {
-  private readonly AI_API_KEY = process.env.AI_API_KEY;
+  private readonly AI_API_KEY = process.env.OPEN_AI_API_KEY;
 
   async generateResumeWithAI(prompt: string): Promise<string> {
     try {

@@ -11,7 +11,6 @@ export class ResumeController {
     @Body() body: { prompt: string; fileType: string },
     @Res() res: Response,
   ) {
-    console.log('Generating resume with AI...');
     const { prompt, fileType } = body;
     const resumeText = await this.resumeService.generateResumeWithAI(prompt);
 
